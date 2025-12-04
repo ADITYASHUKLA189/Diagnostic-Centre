@@ -72,10 +72,11 @@ const Booking: React.FC = () => {
             </div>
             
             <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* CHANGED: Updated grid breakpoint from md to lg to prevent Phone/Email overlap on tablets/small screens */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 
                 {/* Personal Info Group */}
-                <div className="col-span-2">
+                <div className="lg:col-span-2">
                     <label className="block text-sm font-semibold text-slate-700 mb-2">Patient Name *</label>
                     <input
                         type="text"
@@ -83,7 +84,7 @@ const Booking: React.FC = () => {
                         required
                         value={formData.fullName}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-slate-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                         placeholder="Ex. Rajesh Kumar"
                     />
                 </div>
@@ -96,7 +97,7 @@ const Booking: React.FC = () => {
                     required
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-slate-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                     placeholder="+91 XXXXX XXXXX"
                   />
                 </div>
@@ -109,22 +110,22 @@ const Booking: React.FC = () => {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-slate-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                     placeholder="email@example.com"
                   />
                 </div>
 
                 {/* Service Selection */}
-                <div className="col-span-2">
+                <div className="lg:col-span-2">
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Recommended Service *</label>
                   <select
                     name="service"
                     required
                     value={formData.service}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                   >
-                    <option value="">Select a service...</option>
+                    <option value="" className="text-gray-400">Select a service...</option>
                     <option value="Digital X-Ray">Digital X-Ray</option>
                     <option value="Blood Test">Blood Test (Pathology)</option>
                     <option value="Urine Test">Urine Analysis</option>
@@ -135,14 +136,14 @@ const Booking: React.FC = () => {
                 </div>
 
                 {/* Notes */}
-                <div className="col-span-2">
+                <div className="lg:col-span-2">
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Medical Notes / Symptoms</label>
                   <textarea
                     name="notes"
                     rows={4}
                     value={formData.notes}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-slate-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
                     placeholder="Briefly describe your concern or doctor's referral..."
                   ></textarea>
                 </div>
