@@ -1,49 +1,69 @@
 import { Appointment } from '../types';
+import { db } from './firebase';
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 
-const STORAGE_KEY = 'shubhangi_appointments';
 const AUTH_KEY = 'shubhangi_auth';
-
-// Simulate API delay
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const COLLECTION_NAME = 'appointments';
 
 export const StorageService = {
   getAppointments: async (): Promise<Appointment[]> => {
-    await delay(500);
-    const data = localStorage.getItem(STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+    try {
+      const q = query(collection(db, COLLECTION_NAME), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Appointment[];
+    } catch (error) {
+      console.error("Error getting documents: ", error);
+      return [];
+    }
   },
 
   saveAppointment: async (appointment: Omit<Appointment, 'id' | 'createdAt' | 'status'>): Promise<Appointment> => {
-    await delay(800);
-    const current = await StorageService.getAppointments();
-    
-    const newAppointment: Appointment = {
-      ...appointment,
-      id: Math.random().toString(36).substr(2, 9),
-      createdAt: Date.now(),
-      status: 'pending'
-    };
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([newAppointment, ...current]));
-    return newAppointment;
+    try {
+      const newAppointment = {
+        ...appointment,
+        createdAt: Date.now(),
+        status: 'pending'
+      };
+      
+      const docRef = await addDoc(collection(db, COLLECTION_NAME), newAppointment);
+      return {
+        id: docRef.id,
+        ...newAppointment
+      } as Appointment;
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      throw error;
+    }
   },
 
   updateStatus: async (id: string, status: Appointment['status']): Promise<void> => {
-    const current = await StorageService.getAppointments();
-    const updated = current.map(app => app.id === id ? { ...app, status } : app);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    try {
+      const apptRef = doc(db, COLLECTION_NAME, id);
+      await updateDoc(apptRef, { status });
+    } catch (error) {
+      console.error("Error updating document: ", error);
+      throw error;
+    }
   },
 
   deleteAppointment: async (id: string): Promise<void> => {
-    const current = await StorageService.getAppointments();
-    const updated = current.filter(app => app.id !== id);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    try {
+      await deleteDoc(doc(db, COLLECTION_NAME, id));
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+      throw error;
+    }
   },
 
-  // Mock Authentication
+  // Mock Authentication (Frontend only)
   login: async (password: string): Promise<boolean> => {
-    await delay(500);
-    // Hardcoded password for demo
+    // Artificial delay to simulate network request
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Hardcoded password for demo/admin access
     if (password === 'admin123') {
       localStorage.setItem(AUTH_KEY, 'true');
       return true;
